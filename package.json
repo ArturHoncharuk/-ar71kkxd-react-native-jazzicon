@@ -47,14 +47,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArturHoncharuk/-ar71kkxd-react-native-jazzicon.git"
+    "url": "git+https://github.com/ArturHoncharuk/react-native-jazzicon"
   },
   "author": "ArturHoncharuk <dotwork.play@gmail.com> (https://github.com/ArturHoncharuk)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ArturHoncharuk/-ar71kkxd-react-native-jazzicon/issues"
+    "url": "https://github.com/ArturHoncharuk/react-native-jazzicon/issues"
   },
-  "homepage": "https://github.com/ArturHoncharuk/-ar71kkxd-react-native-jazzicon#readme",
+  "homepage": "https://github.com/ArturHoncharuk/react-native-jazzicon#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
