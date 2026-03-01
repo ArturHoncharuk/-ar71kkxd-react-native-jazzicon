@@ -86,7 +86,8 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-svg": "*"
   },
   "workspaces": [
     "example"
@@ -164,7 +165,6 @@
   },
   "dependencies": {
     "color": "^5.0.3",
-    "mersenne-twister": "^1.1.0",
-    "react-native-svg": "^15.15.3"
+    "mersenne-twister": "^1.1.0"
   }
 }

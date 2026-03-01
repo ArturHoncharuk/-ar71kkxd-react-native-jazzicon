@@ -7,8 +7,10 @@ React Native library for generating deterministic Jazzicons (Ethereum-style iden
 ## Installation
 
 ```sh
-npm i @arturhoncharuk/react-native-jazzicon
+npm i @arturhoncharuk/react-native-jazzicon react-native-svg
 ```
+
+If you don't already have `react-native-svg` in your project, install it as above to avoid duplicate native module errors.
 
 Then run one of the following to link native dependencies:
 
