@@ -13,7 +13,7 @@ npm i @arturhoncharuk/react-native-jazzicon
 ## Usage
 
 ```tsx
-import { Jazzicon } from 'react-native-jazzicon';
+import { Jazzicon } from '@arturhoncharuk/react-native-jazzicon';
 
 const ADDRESSES = [
   '0x1234567890123456789012345678901234567890',
