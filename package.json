@@ -122,6 +122,9 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?|color|color-name|color-string|color-convert|mersenne-twister|react-native-svg)/)"
     ]
   },
   "commitlint": {
