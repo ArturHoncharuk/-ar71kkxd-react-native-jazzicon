@@ -1,6 +1,6 @@
 {
   "name": "@arturhoncharuk/react-native-jazzicon",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "React Native library for generating deterministic Jazzicons (Ethereum-style identicons) from addresses.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
