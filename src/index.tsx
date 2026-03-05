@@ -1,109 +1,110 @@
-import { Component } from 'react';
+import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Svg, Rect } from 'react-native-svg';
 import MersenneTwister from 'mersenne-twister';
 import Color from 'color';
-import type { TJazziconProps, TJazziconState } from './types';
-import { COLORS, wobble, shapeCount } from './constants';
+import type { StyleProp, ViewStyle } from 'react-native';
 
-export class Jazzicon extends Component<TJazziconProps, TJazziconState> {
-  private static propsToState({
-    seed,
-    address,
-  }: TJazziconProps): TJazziconState {
-    if (address) {
-      address = address.toLowerCase();
+export type JazziconProps = {
+  size?: number;
+  address?: string;
+  seed?: number;
+  containerStyle?: StyleProp<ViewStyle>;
+};
 
-      if (address.startsWith('0x')) {
-        seed = parseInt(address.slice(2, 10), 16);
-      }
-    }
+const COLORS = [
+  '#01888C',
+  '#FC7500',
+  '#034F5D',
+  '#F73F01',
+  '#FC1960',
+  '#C7144C',
+  '#F3C100',
+  '#1598F2',
+  '#2465E1',
+  '#F19E02',
+];
 
-    const generator = new MersenneTwister(seed);
-    const amount = generator.random() * 30 - wobble / 2;
-    return {
-      generator,
-      colors: COLORS.map((hex) => new Color(hex).rotate(amount).hex()),
+const WOBBLE = 30;
+const SHAPE_COUNT = 3;
+
+export function computeSeed(address?: string, seed?: number): number | undefined {
+  if (address) {
+    const lower = address.toLowerCase();
+    if (lower.startsWith('0x')) return parseInt(lower.slice(2, 10), 16);
+  }
+  return seed;
+}
+
+export function computeColors(seed?: number): string[] {
+  const gen = new MersenneTwister(seed);
+  const amount = gen.random() * WOBBLE - WOBBLE / 2;
+  return COLORS.map((hex) => new Color(hex).rotate(amount).hex());
+}
+
+export function Jazzicon({
+  size = 16,
+  address,
+  seed,
+  containerStyle,
+}: JazziconProps) {
+  const { bgColor, shapes } = useMemo(() => {
+    const resolvedSeed = computeSeed(address, seed);
+    const gen = new MersenneTwister(resolvedSeed);
+    const amount = gen.random() * WOBBLE - WOBBLE / 2;
+    const colors = COLORS.map((hex) => new Color(hex).rotate(amount).hex());
+
+    const rnd = () => gen.random();
+    const pickColor = () => {
+      rnd();
+      return colors.splice(Math.floor(colors.length * rnd()), 1)[0] ?? '#000000';
     };
-  }
 
-  public state: TJazziconState = Jazzicon.propsToState(this.props);
+    const bg = pickColor();
+    const shapeList = Array.from({ length: SHAPE_COUNT }, (_, index) => {
+      const firstRot = rnd();
+      const velocity =
+        (size / SHAPE_COUNT) * rnd() + (index * size) / SHAPE_COUNT;
+      const tx = Math.cos(Math.PI * 2 * firstRot) * velocity;
+      const ty = Math.sin(Math.PI * 2 * firstRot) * velocity;
+      const secondRot = rnd();
+      const rot = firstRot * 360 + secondRot * 180;
+      return { tx, ty, rot, color: pickColor() };
+    });
 
-  public static getDerivedStateFromProps(
-    props: TJazziconProps,
-    _state: TJazziconState
-  ): Partial<TJazziconState> | null {
-    return Jazzicon.propsToState(props);
-  }
+    return { bgColor: bg, shapes: shapeList };
+  }, [address, seed, size]);
 
-  public render() {
-    const { containerStyle, size = 16 } = this.props;
+  const center = size / 2;
 
-    return (
-      <View
-        style={[
-          styles.container,
-          {
-            width: size,
-            height: size,
-            backgroundColor: this.randomColor,
-            borderRadius: size / 2,
-          },
-          containerStyle,
-        ]}
-      >
-        <Svg width={size} height={size}>
-          {Array(shapeCount)
-            .fill(0)
-            .map((_, index) => {
-              const center = size / 2;
-
-              const firstRot = this.randomNumber;
-              const angle = Math.PI * 2 * firstRot;
-              const velocity =
-                (size / shapeCount) * this.randomNumber +
-                (index * size) / shapeCount;
-
-              const tx = Math.cos(angle) * velocity;
-              const ty = Math.sin(angle) * velocity;
-
-              const secondRot = this.randomNumber;
-              const rot = firstRot * 360 + secondRot * 180;
-
-              return (
-                <Rect
-                  key={`shape_${index}`}
-                  x={0}
-                  y={0}
-                  width={size}
-                  height={size}
-                  fill={this.randomColor}
-                  transform={`translate(${tx} ${ty}) rotate(${rot.toFixed(
-                    1
-                  )} ${center} ${center})`}
-                />
-              );
-            })}
-        </Svg>
-      </View>
-    );
-  }
-
-  private get randomNumber(): number {
-    const { generator } = this.state;
-    return generator.random();
-  }
-
-  private get randomColor(): string {
-    const { colors } = this.state;
-
-    this.randomNumber;
-
-    return (
-      colors.splice(Math.floor(colors.length * this.randomNumber), 1)[0] ??
-      '#000000'
-    );
-  }
+  return (
+    <View
+      style={[
+        styles.container,
+        {
+          width: size,
+          height: size,
+          backgroundColor: bgColor,
+          borderRadius: center,
+        },
+        containerStyle,
+      ]}
+    >
+      <Svg width={size} height={size}>
+        {shapes.map(({ tx, ty, rot, color }, index) => (
+          <Rect
+            key={`shape_${index}`}
+            x={0}
+            y={0}
+            width={size}
+            height={size}
+            fill={color}
+            transform={`translate(${tx} ${ty}) rotate(${rot.toFixed(1)} ${center} ${center})`}
+          />
+        ))}
+      </Svg>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
