@@ -28,7 +28,10 @@ const COLORS = [
 const WOBBLE = 30;
 const SHAPE_COUNT = 3;
 
-export function computeSeed(address?: string, seed?: number): number | undefined {
+export function computeSeed(
+  address?: string,
+  seed?: number
+): number | undefined {
   if (address) {
     const lower = address.toLowerCase();
     if (lower.startsWith('0x')) return parseInt(lower.slice(2, 10), 16);
@@ -57,7 +60,9 @@ export function Jazzicon({
     const rnd = () => gen.random();
     const pickColor = () => {
       rnd();
-      return colors.splice(Math.floor(colors.length * rnd()), 1)[0] ?? '#000000';
+      return (
+        colors.splice(Math.floor(colors.length * rnd()), 1)[0] ?? '#000000'
+      );
     };
 
     const bg = pickColor();
@@ -99,7 +104,9 @@ export function Jazzicon({
             width={size}
             height={size}
             fill={color}
-            transform={`translate(${tx} ${ty}) rotate(${rot.toFixed(1)} ${center} ${center})`}
+            transform={`translate(${tx} ${ty}) rotate(${rot.toFixed(
+              1
+            )} ${center} ${center})`}
           />
         ))}
       </Svg>
